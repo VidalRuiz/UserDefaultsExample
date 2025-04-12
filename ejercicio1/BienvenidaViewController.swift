@@ -49,17 +49,40 @@ class BienvenidaViewController: UIViewController {
         ])
         
         let correo = UserDefaults.standard.string(forKey: "correoGuardado") ?? "correo desconocido"
-        bienvenidaLabel.text = "¡Bienvenido!\nCorreo: \(correo)"
-        
-        cerrarSesionButton.addTarget(self, action: #selector(cerrarSesion), for: .touchUpInside)
-    }
+        bienvenidaLabel.text = "¡Bienvenido!\nCorreo: \(correo)";
+        Logger.shared.saveOnFile(message: "El usuario inició sesión");
+        LoggerJson.shared.save(message: "El usuario abrió la app");
 
-    /// Elimina los datos y regresa a la pantalla de login
-    @objc func cerrarSesion() {
-        let defaults = UserDefaults.standard
-        defaults.removeObject(forKey: "correoGuardado")
-        defaults.removeObject(forKey: "contrasenaGuardada")
-        
-        self.dismiss(animated: true, completion: nil)
+        cerrarSesionButton.addTarget(self, action: #selector(closeSession), for: .touchUpInside);
     }
+    
+    /// Elimina los datos y regresa a la pantalla de login
+    @objc func closeSession() {
+        let alerta = UIAlertController(
+            title: "¿Cerrar sesión?",
+            message: "Se eliminarán tus datos guardados.",
+            preferredStyle: .alert
+        )
+
+        let confirmar = UIAlertAction(title: "Sí", style: .destructive) { _ in
+            // Borrar datos
+            let defaults = UserDefaults.standard
+            defaults.removeObject(forKey: "correoGuardado")
+            defaults.removeObject(forKey: "contrasenaGuardada")
+            Logger.shared.saveOnFile(message: "El usuario cerro la app")
+            LoggerJson.shared.save(message: "El usuario cerro la app")
+
+            // Volver al login
+            self.dismiss(animated: true, completion: nil)
+        }
+
+        let cancelar = UIAlertAction(title: "Cancelar", style: .cancel, handler: nil)
+
+        alerta.addAction(confirmar)
+        alerta.addAction(cancelar)
+
+        present(alerta, animated: true, completion: nil)
+    }
+    
+
 }

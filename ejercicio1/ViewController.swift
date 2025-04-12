@@ -74,11 +74,10 @@ class ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        let correoGuardado = UserDefaults.standard.string(forKey: "correoGuardado")
-        let contrasenaGuardada = UserDefaults.standard.string(forKey: "contrasenaGuardada")
+        let correoGuardado = UserDefaults.standard.string(forKey: "correoGuardado") ?? ""
+        let contrasenaGuardada = UserDefaults.standard.string(forKey: "contrasenaGuardada") ?? ""
         
-        if let correo = correoGuardado, let contrasena = contrasenaGuardada,
-           !correo.isEmpty && !contrasena.isEmpty {
+        if !correoGuardado.isEmpty && !contrasenaGuardada.isEmpty {
             openWelcomeView()
         }
     }
